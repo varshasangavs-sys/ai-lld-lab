@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI-LLD-Lab roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF2EF; --surface:#FFFFFF; --ink:#1B2430; --muted:#5A6573; --rule:#CBD3CF; --soft:#E3E9E5;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#151C24;--surface:#1D2630;--ink:#E7ECEA;--muted:#9AA6B2;--rule:#2F3B47;--soft:#25303B;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#151C24;--surface:#1D2630;--ink:#E7ECEA;--muted:#9AA6B2;--rule:#2F3B47;--soft:#25303B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.55}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header.hero{padding:56px 0 20px}
+h1{font-weight:800;font-size:clamp(2.2rem,6vw,4rem);line-height:1.02;letter-spacing:-0.025em;margin:0 0 16px;max-width:14ch}
+.lead{max-width:62ch;color:var(--muted);margin:0 0 8px;font-size:1.06rem}
+.progress{font-weight:600;margin:18px 0 0}
+.progress span{font-variant-numeric:tabular-nums}
+.map-scroll{overflow-x:auto;margin:24px 0 8px;padding-bottom:6px}
+.map{display:block;min-width:980px;width:100%;height:auto}
+.map .station{cursor:pointer}
+.map .station:focus{outline:none}
+.map .station:focus-visible circle{stroke:var(--ink);stroke-width:3}
+.map text{font-family:inherit;fill:var(--ink)}
+.map .num{font-size:11px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.map .pname{font-size:13px;font-weight:600}
+.hint{color:var(--muted);font-size:.9rem;margin:0}
+
+/* project section */
+section.project{border-top:1px solid var(--rule);margin-top:36px;padding-top:40px}
+h2{margin:0 0 12px;font-size:clamp(1.4rem,3vw,1.9rem);letter-spacing:-0.015em;line-height:1.15}
+.problem{font-size:1.15rem;max-width:60ch;margin:0 0 28px}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.panel{background:var(--surface);border-radius:14px;padding:20px 22px}
+.panel h3{margin:0 0 10px;font-size:1.05rem}
+.panel ul{margin:0;padding-left:1.1em}
+.panel li{margin:0 0 6px}
+.modules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 20px}
+.mod{background:var(--surface);border-radius:14px;padding:16px 18px;border-top:6px solid var(--c)}
+.mod b{display:block;font-size:1.02rem;margin-bottom:2px}
+.mod code{font-size:.85rem;color:var(--muted)}
+.mod p{margin:6px 0 0;font-size:.95rem}
+.dayflow{display:grid;grid-template-columns:1fr 4fr 1fr;border-radius:12px;overflow:hidden;margin:6px 0 0;font-size:.95rem}
+.dayflow div{padding:10px 12px;background:var(--soft)}
+.dayflow div:nth-child(2){background:color-mix(in srgb,#2F5DA8 18%,var(--soft))}
+.dayflow b{display:block}
+
+/* phases */
+section.phase{padding:44px 0 8px;border-top:1px solid var(--rule);margin-top:36px}
+.phase-head{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;align-items:baseline;margin-bottom:22px}
+.phase-badge{grid-row:span 2;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:1.3rem}
+.phase-head h2{margin:0}
+.phase-head p{margin:0;color:var(--muted);max-width:64ch}
+.days{list-style:none;margin:0;padding:0;position:relative}
+.days::before{content:"";position:absolute;left:19px;top:20px;bottom:20px;width:6px;border-radius:3px;background:var(--phase)}
+.day{position:relative;display:grid;grid-template-columns:44px 1fr;gap:14px;margin:0 0 18px}
+.dot{position:relative;z-index:1;margin-top:20px;justify-self:center;width:22px;height:22px;border-radius:50%;background:var(--surface);border:5px solid var(--phase)}
+.day.done .dot{background:var(--phase)}
+.day.done .dot::after{content:"";position:absolute;left:3px;top:0;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.card{background:var(--surface);border-radius:14px;padding:18px 20px;border-left:4px solid var(--phase)}
+.card-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-bottom:4px}
+.dnum{font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.card h3{margin:0;font-size:1.2rem;letter-spacing:-0.01em}
+.time{margin-left:auto;font-size:.88rem;font-weight:600;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--phase) 14%,transparent)}
+.task{margin:6px 0 14px;max-width:70ch}
+.pre{font-size:.93rem;color:var(--muted);margin:0 0 14px;padding:8px 12px;border-radius:10px;background:var(--soft)}
+.pre b{color:var(--ink);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 22px}
+.grid h4{margin:0 0 2px;font-size:.9rem;font-weight:600;color:var(--phase);filter:saturate(1.1)}
+.grid p{margin:0;font-size:.97rem}
+.done-btn{margin-top:14px;font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;padding:7px 14px;border-radius:999px;border:2px solid var(--phase);background:transparent;color:var(--ink)}
+.day.done .done-btn{background:var(--phase);color:#fff}
+.done-btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+footer{padding:48px 0 64px;color:var(--muted);font-size:.95rem}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .grid h4{filter:brightness(1.35)}}
+:root[data-theme="dark"] .grid h4{filter:brightness(1.35)}
+@media (max-width:820px){.grid{grid-template-columns:1fr}.modules{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){
+  body{font-size:16px}.cols{grid-template-columns:1fr}.modules{grid-template-columns:1fr}
+  .day{grid-template-columns:30px 1fr;gap:10px}.days::before{left:12px}.dot{width:18px;height:18px;border-width:4px}
+  .card{padding:14px 16px}.time{margin-left:0}
+  .dayflow{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>AI-LLD-Lab, one station a day</h1>
+    <p class="lead">35 days, one hour a day, about 35 hours in total. Each station is one day: what to do, what you need first, what you’ll have built, and what you’ll understand by the end of it.</p>
+    <p class="progress"><span id="doneCount">0</span> of 35 days done</p>
+    <div class="map-scroll"><svg class="map" id="map" viewBox="0 0 1040 150" role="img" aria-label="Route map of 35 days across 7 phases"></svg></div>
+    <p class="hint">Tap a station to jump to that day. Filled stations are days you’ve marked done; progress is saved in this browser only.</p>
+  </header>
+
+  <section class="project" id="project">
+    <h2>The project</h2>
+    <p class="problem">Small service businesses like clinics, salons and coaching centres get hundreds of repetitive customer messages a day: “When are you open?”, “What does the premium plan include?”, “Move my appointment to Friday.” Staff lose hours answering the same questions and rescheduling by hand. You’ll build the backend of an AI support platform that handles this end to end.</p>
+
+    <div class="modules" id="modules"></div>
+
+    <div class="cols">
+      <div class="panel">
+        <h3>What you’ll have on Day 35</h3>
+        <ul>
+          <li>A live platform on Vercel with a chat UI that answers questions, checks availability and books appointments.</li>
+          <li>A public GitHub repo with CI, tests, Docker setup and a clean layered structure.</li>
+          <li>A design doc per module, a capstone design doc and a 35-entry pattern journal.</li>
+          <li>All 23 Gang of Four patterns, UML, data design, concurrency and deployment used in your own code.</li>
+          <li>A project you can demo and defend line by line in LLD interviews, and reuse as a freelance template.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Before Day 1</h3>
+        <ul>
+          <li><b>Skills:</b> Python classes and type hints, FastAPI basics, basic SQL, Git.</li>
+          <li><b>Tools:</b> Python 3.12+, uv, Docker Desktop, VS Code. Node.js is needed from Day 34.</li>
+          <li><b>Accounts:</b> GitHub now; Vercel and free-tier hosted Postgres and Redis by Day 31.</li>
+          <li><b>Optional:</b> an LLM API key. The fake client covers every day until you want real answers.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="margin:28px 0 8px;font-size:1.05rem">How each hour is spent</h3>
+    <div class="dayflow">
+      <div><b>10 min</b>Concept: mental model, then the proper term</div>
+      <div><b>40 min</b>Build the day’s piece into the repo, with tests</div>
+      <div><b>10 min</b>Journal the decision and trade-off, then commit</div>
+    </div>
+  </section>
+
+  <main id="phases"></main>
+  <footer>Commit each day as “Day N: concept”. If a day runs over, carry the rest forward instead of skipping.</footer>
+</div>
+
+<script>
+const PHASES = [
+  {n:1,name:"Foundations and project setup",short:"Foundations",color:"#2F5DA8",goal:"A repo anyone can clone, run and test in 5 minutes, with the shared core every module depends on.",mod:"core/",modDesc:"Config, logging, errors, LLM client and resilience shared by every module."},
+  {n:2,name:"Booking system",short:"Booking",color:"#B7791F",goal:"Real appointments taken safely, even when two customers grab the same slot at once.",mod:"booking/",modDesc:"Slots, bookings and cancellations with no double booking."},
+  {n:3,name:"RAG and context engineering",short:"RAG",color:"#13857A",goal:"Answers from the business’s own documents, with citations and a retrieval score.",mod:"rag/",modDesc:"Answers questions from FAQs, policies and price lists."},
+  {n:4,name:"Agent framework",short:"Agents",color:"#6D4AB0",goal:"An assistant that answers, checks availability, books, and asks a human before risky actions.",mod:"agents/",modDesc:"Decides when to answer, look things up or book, with human approval for risky steps."},
+  {n:5,name:"Fine-tuning pipeline",short:"Fine-tuning",color:"#C0396B",goal:"A small intent classifier trained, evaluated, and promoted only when it beats the current one.",mod:"finetune/",modDesc:"Trains an intent classifier on past messages to route requests cheaply."},
+  {n:6,name:"Hardening and capstone",short:"Hardening",color:"#4F7A28",goal:"Survives real failures, and you can design an unseen system in 45 minutes.",mod:"core/ resilience",modDesc:"Retries, circuit breakers, caching, rate limits and background jobs."},
+  {n:7,name:"Deploy on Vercel",short:"Deploy",color:"#1B7FAE",goal:"Live on a public URL with a chat UI, hosted data and a rehearsed rollback.",mod:"web/ + Vercel",modDesc:"A streaming chat UI and the production deployment."}
+];
+const STD = "60 min";
+const D = (n,p,title,pre,work,built,know,problem,time)=>({n,p,title,pre,work,built,know,problem,time:time||STD});
+const DAYS = [
+ D(1,1,"Repo setup","Python 3.12+, uv and Git installed; a GitHub account.","Create the repo with uv, a src layout, pyproject.toml, ruff, mypy, pytest, pre-commit and a Makefile, and push it to GitHub.","make check runs lint, type checks and tests in one command.","Tooling as a guardrail, and why a src layout prevents import bugs.","New teammates lose days to “works on my machine” setup and style arguments."),
+ D(2,1,"Config, logging and errors","Day 1 repo; how environment variables and Python logging work.","Build core/config.py with pydantic-settings, JSON logging with a request id, and a base AppError hierarchy.","One typed settings object, searchable logs, and errors with a type and code.","Layering and dependency direction; Singleton and why global singletons hurt tests; typed config.","Incidents where nobody can tell which request failed or which env var was wrong."),
+ D(3,1,"LLM client interface","Day 2 core package; Python Protocols or abstract classes; an LLM API key is optional.","Define an LLMClient Protocol, a FakeLLMClient and one real adapter.","Business code calls LLMClient and never a vendor SDK.","Interfaces, Dependency Inversion and the Adapter pattern.","Vendor lock-in because SDK calls are spread across 40 files."),
+ D(4,1,"Dependency injection","Day 3 interfaces; FastAPI routes and Depends.","Add app.py as the composition root and wire every dependency through FastAPI Depends.","No class creates its own dependencies; one file decides what’s real and what’s fake.","Constructor injection, the composition root, and why it makes code testable.","Code that can’t be tested without real API keys and a live database."),
+ D(5,1,"Testing and CI","Days 1–4 pushed to GitHub; pytest basics.","Set up fixtures, a contract-test template and a GitHub Actions workflow.","Every push runs checks, and any new adapter reuses the contract tests.","Liskov Substitution through contract tests; the testing pyramid.","A new provider that works locally but breaks callers in production."),
+ D(6,2,"Booking domain model","Phase 1 done; SQL tables, primary keys and foreign keys.","Write requirements, then model Resource, Slot, Booking and Customer as pure domain classes and design the table schema.","A class diagram and a normalized schema with keys and indexes.","Entities vs value objects, UML class diagrams and schema design.","Booking rules tangled into route handlers, so one rule change touches 10 places."),
+ D(7,2,"Booking lifecycle","Day 6 domain classes; Python enums.","Implement pending, confirmed, cancelled and expired with only the allowed transitions.","Illegal moves, like cancelling an expired booking, raise a clear domain error.","The State pattern and keeping invariants inside the domain.","Data corruption from status fields anyone can set to any value."),
+ D(8,2,"Repository and API","Day 7; Postgres running in Docker; SQLAlchemy basics.","Add a BookingRepository with in-memory and Postgres adapters, a Unit of Work, a BookingService and REST routes.","A working booking API; the same service tests pass against both repositories.","Repository, Unit of Work, Single Responsibility, and REST design with status codes, pagination and versioning.","Switching or testing databases means rewriting business logic."),
+ D(9,2,"No double booking","Day 8 API; what a database transaction is.","Use optimistic locking or row locks, add idempotency keys, and publish BookingConfirmed events.","Two requests for one slot: exactly one wins. A retried request never books twice.","Locking strategies, transaction isolation levels, idempotency, Observer, and sequence diagrams.","Double-booked appointments and duplicate charges when the network retries."),
+ D(10,3,"Document loaders","Phase 1 core; a few sample PDF, Markdown and HTML files for a fake business.","Build a DocumentLoader port with PDF, Markdown and HTML loaders chosen by a factory.","A new file format needs one new class and one registry line.","Factory Method, Abstract Factory, Registry and the Open/Closed principle.","Ingestion code that grows into one giant file-type if-chain."),
+ D(11,3,"Chunking and embedding","Day 10 loaders; an embedding API key or a local embedding model.","Add chunking strategies (fixed, recursive, by heading) using a Visitor over the parsed document tree, plus an Embedder adapter.","Chunking is set by config and the embedding vendor can be swapped.","Strategy, Adapter and Visitor.","Retrieval quality stuck because chunking is hard-coded."),
+ D(12,3,"Retrieval","Day 11 chunks and embeddings; the idea behind keyword (BM25) search.","Define a VectorStore port and a Retriever for dense, keyword and hybrid search, with a small metadata filter language.","A hybrid retriever built from two simpler ones, plus filters like category = plans and price < 100.","Repository, Composite, Strategy, Iterator and Interpreter.","Vector search missing exact matches like plan names, prices or error codes."),
+ D(13,3,"Context builder","Day 12 retriever; a tokenizer such as tiktoken.","Rank, deduplicate, fit chunks into a token budget and attach citations, sharing one tokenizer and an embedding cache.","Prompts never overflow, and every answer shows its sources.","Builder, Flyweight, and context engineering as a design problem.","Hallucinated or truncated answers from stuffed prompts."),
+ D(14,3,"Ingestion pipeline and eval","Days 10–13; 20 realistic customer questions with expected answers written down.","Wire ingestion as pipeline steps and add an eval set measuring recall@k.","One command re-ingests documents and prints a retrieval score.","Pipeline, Template Method, and evaluation as a first-class component.","Tuning RAG by gut feel with no way to tell better from worse."),
+ D(15,4,"Tools","Booking service from Phase 2 and retriever from Phase 3; JSON Schema and LLM function calling basics.","Define a Tool interface with a JSON schema, a ToolRegistry and a validating executor; wrap search_docs and book_slot.","The agent calls existing modules through one uniform interface.","Command, Registry and Adapter.","Agents crashing or doing damage on malformed LLM arguments."),
+ D(16,4,"Memory","Day 15 tools; Postgres or Redis for long-term storage.","Add a short-term buffer, a long-term store, a summarization policy and conversation checkpoints.","Long chats stay within budget, and conversation state can be restored.","Repository, Strategy and Memento (the idea behind LangGraph checkpointers).","Assistants forgetting what the customer said 10 messages ago."),
+ D(17,4,"Agent loop","Days 15–16; sketch the loop’s states on paper first.","Build think, act, observe, finish and failed as an explicit state machine with a max-steps guard.","The loop always ends, and every run has a readable state history.","The State pattern and UML state diagrams.","Infinite tool-calling loops that burn money."),
+ D(18,4,"Multi-agent supervisor","Day 17 loop working for one agent.","Add a supervisor that routes to FAQ and booking specialists.","New specialists can be added without changing the others.","Mediator and separation of concerns.","One giant prompt trying to do everything and getting worse at each task."),
+ D(19,4,"Guardrails and approval","Day 18; a written list of actions you consider risky.","Run input and output checks as a chain, and wrap cancel_booking in a proxy that needs human approval.","Risky actions pause for approval, and unsafe input is rejected early.","Chain of Responsibility, Proxy and human-in-the-loop design.","An agent cancelling a real appointment because of an ambiguous message."),
+ D(20,4,"Tracing","Days 15–19; Day 2 logging setup.","Emit events for every LLM call, tool call and state change, and write a JSON trace per run.","Any bad answer can be traced step by step.","Observer, and observability as part of design.","“The bot said something weird” with no way to find out why."),
+ D(21,5,"Datasets","Phase 1 core; a CSV of about 200 labelled customer messages (write or generate them).","Build a versioned, immutable Dataset with schema validation, and clone experiment configs from a base config.","Every training run points to an exact dataset version.","Value objects, immutability, Repository and Prototype.","Nobody knows which data a model was trained on."),
+ D(22,5,"Preprocessing","Day 21 dataset.","Write clean, deduplicate, label-map and split as separate pipeline steps.","Each step is tested alone, and the pipeline is configured rather than hard-coded.","Pipeline and Single Responsibility.","Data leakage hidden inside a 300-line script."),
+ D(23,5,"Trainer","Day 22; scikit-learn or a tiny Hugging Face model. A mock trainer is fine.","Create a BaseTrainer with fixed steps, LoRA and full variants, callbacks, and a trainer kept separate from its compute backend.","Training methods and compute backends swap independently.","Template Method, Strategy, Observer and Bridge.","Copy-pasted training scripts that drift apart."),
+ D(24,5,"Evaluation","Day 23 trained model; precision, recall and F1.","Add a Metric interface and an eval suite comparing a candidate with the baseline.","Every run reports whether it’s better, and on which classes.","Strategy, and evaluation as a component.","Shipping a “better” model that’s worse on the class that matters most."),
+ D(25,5,"Model registry","Day 24 eval reports; the Phase 4 router.","Build registered, staging, production and archived states with promotion rules; the router loads the production model.","Only models that pass eval reach production, and rollback is one state change.","The State pattern and gated transitions.","Bad models in production with no record and no rollback."),
+ D(26,6,"Resilience","Phases 1–5; a list of what each external call can fail with.","Add retry with backoff, timeouts and a circuit breaker as decorators on the LLM client, embedder and vector store.","One flaky dependency can’t take down the platform.","Decorator and State.","A provider outage turning into a full outage."),
+ D(27,6,"Cache and rate limits","Day 26; Redis running in Docker.","Build your own LRU cache and token-bucket limiter, then a Redis-backed limiter.","Repeat questions are cheap, and no single client can flood the system.","Data-structure design, distributed state and race conditions.","Surprise API bills and one noisy client slowing everyone down."),
+ D(28,6,"Async and threads","Day 27; asyncio and threading basics.","Move heavy work into background jobs, cap LLM calls with a semaphore, handle cancellation, and build a threaded producer-consumer, then reproduce and fix a deadlock.","The API stays fast while heavy work runs separately.","Async vs threads vs processes, locks, deadlocks and backpressure.","Requests timing out because ingestion ran inside the API."),
+ D(29,6,"Timed drill","Days 1–28; the six-step recipe; a timer and paper or Excalidraw.","Design a notification or food-delivery system with the six-step recipe, then compare with a reference solution.","A class diagram, interfaces and a sequence diagram for a domain you haven’t built.","Applying the recipe to unseen problems under time pressure.","LLD interview rounds and live design reviews.","45 min drill, 15 min review"),
+ D(30,6,"Capstone doc","Everything so far; Docker installed.","Add a Dockerfile and compose file, write the capstone design doc, and record a 5-minute walkthrough.","A shippable repo and a design doc you can share.","Communicating design decisions and trade-offs.","Good engineers losing interviews because they can’t explain their own design."),
+ D(31,7,"Production architecture","Phase 6 done; Vercel account; hosted Postgres (with pgvector) and Redis accounts.","Plan a stateless API on Vercel with hosted Postgres, hosted Redis and Vercel Blob; write PgVectorStore and BlobStorage adapters.","Local and production differ only in config and adapters.","Ports and adapters, 12-factor config and UML deployment diagrams.","Apps that need a rewrite to move off a laptop."),
+ D(32,7,"Deploy the API","Day 31 adapters; Vercel CLI installed; repo on GitHub.","Set the entrypoint in pyproject, pin Python, keep runtime dependencies slim, set env vars per environment, and turn on preview deploys per PR.","Every PR gets a preview URL; merging to main deploys production.","Environment separation, bundle hygiene and immutable deploys.","Testing in production because there’s no staging."),
+ D(33,7,"Background work","Day 32 deploy; Day 28 background job design.","Expire bookings with Vercel Cron, run ingestion as queued idempotent batch jobs behind a JobQueue port, and train in GitHub Actions.","No request does more than a few seconds of work, and training never runs on Vercel.","Serverless limits as a design input, Adapter and idempotent jobs.","Functions timing out halfway through ingestion."),
+ D(34,7,"Facade and chat UI","Day 33; React basics; Node.js installed.","Add a SupportPlatform facade and a streaming Next.js chat UI deployed on Vercel.","A real URL a business could use; the UI knows nothing about internal modules.","Facade, frontend and backend contracts, and streaming.","Frontends wired to 15 internal endpoints that break on every refactor."),
+ D(35,7,"Production hardening","Days 31–34; Alembic basics.","Run migrations in CI, add health checks, logs and traces, rate limits, a secrets audit and smoke tests, and rehearse a rollback.","A production checklist passed and a rollback practised once.","Operability, and safe migrations (expand, migrate, contract).","A schema change that takes the app down with no way back.")
+];
+
+let done = new Set();
+try { const raw = localStorage.getItem("ai-lld-lab-done"); if (raw) done = new Set(JSON.parse(raw)); } catch(e) {}
+function save(){ try { localStorage.setItem("ai-lld-lab-done", JSON.stringify([...done])); } catch(e) {} }
+const phaseColor = p => PHASES[p-1].color;
+
+/* modules */
+const modEl = document.getElementById("modules");
+PHASES.forEach(ph=>{
+  const d = document.createElement("div"); d.className="mod"; d.style.setProperty("--c",ph.color);
+  d.innerHTML = `<b>${ph.short}</b><code>${ph.mod}</code><p>${ph.modDesc}</p>`;
+  modEl.appendChild(d);
+});
+
+/* phases and day cards */
+const main = document.getElementById("phases");
+PHASES.forEach(ph=>{
+  const days = DAYS.filter(d=>d.p===ph.n);
+  const sec = document.createElement("section");
+  sec.className="phase"; sec.id="phase-"+ph.n; sec.style.setProperty("--phase",ph.color);
+  sec.innerHTML = `<div class="phase-head"><div class="phase-badge" style="background:${ph.color}" aria-hidden="true">${ph.n}</div>
+    <h2>Phase ${ph.n}: ${ph.name}</h2><p>Days ${days[0].n}–${days[days.length-1].n}, ${days.length} hours. ${ph.goal}</p></div>`;
+  const ul = document.createElement("ul"); ul.className="days";
+  days.forEach(d=>{
+    const li = document.createElement("li"); li.className="day"; li.id="day-"+d.n;
+    li.innerHTML = `<span class="dot" aria-hidden="true"></span>
+      <article class="card">
+        <div class="card-top"><span class="dnum">Day ${d.n}</span><h3>${d.title}</h3><span class="time">${d.time}</span></div>
+        <p class="task">${d.work}</p>
+        <p class="pre"><b>Before you start:</b> ${d.pre}</p>
+        <div class="grid">
+          <div><h4>You’ll have built</h4><p>${d.built}</p></div>
+          <div><h4>You’ll understand</h4><p>${d.know}</p></div>
+          <div><h4>Problem it solves</h4><p>${d.problem}</p></div>
+        </div>
+        <button class="done-btn" type="button" data-day="${d.n}"></button>
+      </article>`;
+    ul.appendChild(li);
+  });
+  sec.appendChild(ul); main.appendChild(sec);
+});
+
+/* transit map */
+const svg = document.getElementById("map"), NS="http://www.w3.org/2000/svg";
+const x0=30, step=28.5, y=70, xOf = n => x0 + (n-1)*step;
+const el = (t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+PHASES.forEach(ph=>{
+  const ds = DAYS.filter(d=>d.p===ph.n), a=xOf(ds[0].n), b=xOf(ds[ds.length-1].n);
+  const next = DAYS.find(d=>d.n===ds[ds.length-1].n+1);
+  svg.appendChild(el("line",{x1:a,y1:y,x2:next?xOf(next.n):b,y2:y,stroke:ph.color,"stroke-width":10,"stroke-linecap":"round"}));
+  const label = el("text",{x:a-6,y:y+42,class:"pname"}); label.textContent = ph.n+". "+ph.short;
+  label.style.fill = ph.color; svg.appendChild(label);
+});
+DAYS.forEach(d=>{
+  const g = el("g",{class:"station",tabindex:"0",role:"link","aria-label":`Day ${d.n}: ${d.title}`,"data-day":d.n});
+  const c = el("circle",{cx:xOf(d.n),cy:y,r:9,"stroke-width":4,stroke:phaseColor(d.p)});
+  const t = el("text",{x:xOf(d.n),y:y-20,"text-anchor":"middle",class:"num"}); t.textContent=d.n;
+  const tip = el("title",{}); tip.textContent=`Day ${d.n}: ${d.title}`;
+  g.append(tip,c,t); svg.appendChild(g);
+  const go=()=>jump(d.n);
+  g.addEventListener("click",go);
+  g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});
+});
+
+function render(){
+  document.getElementById("doneCount").textContent = done.size;
+  DAYS.forEach(d=>{
+    const isDone = done.has(d.n), li = document.getElementById("day-"+d.n);
+    li.classList.toggle("done",isDone);
+    const btn = li.querySelector(".done-btn");
+    btn.textContent = isDone ? "Done, tap to undo" : "Mark day as done";
+    btn.setAttribute("aria-pressed",isDone);
+    svg.querySelector(`.station[data-day="${d.n}"] circle`).setAttribute("fill", isDone ? phaseColor(d.p) : "var(--surface)");
+  });
+}
+document.addEventListener("click",e=>{
+  const b = e.target.closest(".done-btn"); if(!b) return;
+  const n = +b.dataset.day; done.has(n)?done.delete(n):done.add(n); save(); render();
+});
+function jump(n){
+  const li = document.getElementById("day-"+n); if(!li) return;
+  li.scrollIntoView({block:"start"});
+  if(location.hash!=="#day-"+n) history.replaceState(null,"","#day-"+n);
+}
+function fromHash(){ const m = location.hash.match(/^#day-(\d+)$/); if(m) jump(+m[1]); }
+window.addEventListener("hashchange",fromHash);
+render(); fromHash();
+</script>
+</body>
+</html>
