@@ -1,9 +1,11 @@
-import subprocess, sys
+import subprocess
+import sys
+
 steps = [
-  ["uv","run","ruff","check","."],
-  ["uv","run","ruff","format","--check","."],
-  ["uv","run","mypy","src"],
-  ["uv","run","pytest"],
+    ["uv", "run", "ruff", "check", "."],
+    ["uv", "run", "ruff", "format", "--check", "."],
+    ["uv", "run", "mypy", "src"],
+    ["uv", "run", "pytest"],
 ]
 for cmd in steps:
     print(">", " ".join(cmd))
