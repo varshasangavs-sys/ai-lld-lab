@@ -32,3 +32,12 @@ class UnauthorizedError(AppError):
     def __init__(self, message: str | None = None) -> None:
         self.message = message or "Unauthorized access."
         super().__init__(self.message)
+
+
+class UpstreamError(AppError):
+    code = "upstream_error"
+    status_code = 502
+
+    def __init__(self, message: str | None = None) -> None:
+        self.message = message or "An upstream service failed."
+        super().__init__(self.message)
